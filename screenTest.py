@@ -12,6 +12,8 @@ import time
 CHARACTERISTIC_UUID = "aaaaaaaa-dddd-bbbb-bbbb-bbbbbbbbbbbb"
 UUID = "aaaaaaaa-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
 
+def notify_izunya(sender: int, data: bytearray):
+    print("notifyyy")
 
 
 async def maincentral(device):
@@ -32,8 +34,6 @@ async def maincentral(device):
         print("not22222")
         await client.stop_notify(CHARACTERISTIC_UUID)
         
-def notify_izunya():
-    print("notifyyy")
 
 
 async def scan(prefix='TEST BLE'):
@@ -44,7 +44,10 @@ async def scan(prefix='TEST BLE'):
             for d in devices:
                 print(f"address: {d.address}, name: {d.name}, uuid: {d.metadata['uuids']}")
                 if d.name == 'TEST BLE' or d.metadata['uuids'] == ['aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee']:
-                    return d
+                    #return d
+                    label.config(text="接続完了")
+                    button.config(state=tk.NORMAL)
+                    await maincentral(d)
         except StopIteration:
             print('continue..')
             continue
@@ -55,9 +58,8 @@ def update_label_after_scan():
     label.config(text="接続中...")
     button.config(state=tk.DISABLED)
     device = asyncio.run(scan())
-    label.config(text="接続完了")
-    button.config(state=tk.NORMAL)
-    asyncio.run(maincentral(device))
+    
+    #asyncio.run(maincentral(device))
    
    
 
