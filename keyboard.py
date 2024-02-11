@@ -3,6 +3,7 @@ import asyncio
 #import ctypes.windll.user32 as win32api
 import win32con
 import win32api
+import time
 
 
 VK_CODE = {'backspace':0x08,
