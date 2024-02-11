@@ -18,7 +18,8 @@ def notify_izunya(sender: int, data: bytearray):
 
 
 async def maincentral(device):
-    # Scan device
+    global is_running
+    #Scan device
     #print("main")
     #device = await scan('TEST BLE')
     #print('found', device.name, device.address)
@@ -31,7 +32,13 @@ async def maincentral(device):
 
         await client.start_notify(CHARACTERISTIC_UUID,  notify_izunya)
         print("noti1111")
-        await asyncio.sleep(30.0)
+        #await asyncio.sleep(30.0)
+        for _ in range(30):
+            await asyncio.sleep(1)  # 中断を可能にするための短いスリープ
+            if not is_running:
+                print("is_runningがFalseに変わったため、停止...")
+                break  # is_runningがFalseの場合、ループから抜け出す
+
         print("not22222")
         await client.stop_notify(CHARACTERISTIC_UUID)
         
@@ -50,6 +57,7 @@ async def scan(prefix='TEST BLE'):
                     label.config(text="接続完了")
                     button.config(state=tk.NORMAL)
                     await maincentral(d)
+                    continue
             continue
         except StopIteration:
             print('continue..')
