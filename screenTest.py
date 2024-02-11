@@ -7,6 +7,7 @@ from bleak import BleakClient, discover
 from bleak import BleakScanner
 import time
 
+is_running = True
 
 # mac_address = "76:95:E3:BB:43:7B"
 CHARACTERISTIC_UUID = "aaaaaaaa-dddd-bbbb-bbbb-bbbbbbbbbbbb"
@@ -37,7 +38,8 @@ async def maincentral(device):
 
 
 async def scan(prefix='TEST BLE'):
-    while True:
+    global is_running
+    while is_running:
         try:
             print('scan...')
             devices = await BleakScanner.discover()
@@ -48,6 +50,7 @@ async def scan(prefix='TEST BLE'):
                     label.config(text="接続完了")
                     button.config(state=tk.NORMAL)
                     await maincentral(d)
+            continue
         except StopIteration:
             print('continue..')
             continue
@@ -64,11 +67,19 @@ def update_label_after_scan():
    
 
 def on_button_click():
+    global is_running
+    is_running = True
     thread1 = threading.Thread(target=update_label_after_scan)
     thread1.start()
-    
 
-   
+def on_button_click_stop():
+    global is_running
+    is_running = False
+
+def on_close():
+    global is_running
+    is_running = False  # スレッドを停止させる
+    root.destroy()  # ウィンドウを閉じる
 
 # メインウィンドウを作成
 root = tk.Tk()
@@ -79,9 +90,14 @@ root.geometry("500x300")
 button = tk.Button(root, text="デバイスに接続する", command=on_button_click)
 button.pack(pady=10)
 
+button_stop = tk.Button(root, text="stop", command=on_button_click_stop)
+button_stop.pack(pady=10)
+
 # ラベルを作成
 label = tk.Label(root, text="接続を開始するにはボタンをクリックしてください")
 label.pack(pady=10) #paddingを設定
 
+# ウィンドウが閉じられるイベントに対する処理を設定
+root.protocol("WM_DELETE_WINDOW", on_close)
 # イベントループを開始
 root.mainloop()
