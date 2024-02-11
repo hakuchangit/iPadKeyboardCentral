@@ -6,7 +6,7 @@ import asyncio
 from bleak import BleakClient, discover
 from bleak import BleakScanner
 import time
-
+import keyboard
 is_running = True
 
 # mac_address = "76:95:E3:BB:43:7B"
@@ -14,7 +14,7 @@ CHARACTERISTIC_UUID = "aaaaaaaa-dddd-bbbb-bbbb-bbbbbbbbbbbb"
 UUID = "aaaaaaaa-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
 
 def notify_izunya(sender: int, data: bytearray):
-    print("notifyyy")
+    keyboard.notification_handler(sender, data)
 
 
 async def maincentral(device):
