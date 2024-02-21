@@ -31,15 +31,13 @@ async def maincentral(device):
        # await client.start_notify(CHARACTERISTIC_UUID, notification_handler)
 
         await client.start_notify(CHARACTERISTIC_UUID,  notify_izunya)
-        print("noti1111")
         #await asyncio.sleep(30.0)
-        for _ in range(30):
+        for _ in range(20000):
             await asyncio.sleep(1)  # 中断を可能にするための短いスリープ
             if not is_running:
                 print("is_runningがFalseに変わったため、停止...")
                 break  # is_runningがFalseの場合、ループから抜け出す
 
-        print("not22222")
         await client.stop_notify(CHARACTERISTIC_UUID)
         
 
