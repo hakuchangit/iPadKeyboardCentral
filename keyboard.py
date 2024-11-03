@@ -260,9 +260,9 @@ Changetoinput={
     }
 
 
-mac_address = "76:95:E3:BB:43:7B"
-CHARACTERISTIC_UUID = "aaaaaaaa-dddd-bbbb-bbbb-bbbbbbbbbbbb"
-UUID = "aaaaaaaa-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+# mac_address = "76:95:E3:BB:43:7B"
+# CHARACTERISTIC_UUID = "aaaaaaaa-dddd-bbbb-bbbb-bbbbbbbbbbbb"
+# UUID = "aaaaaaaa-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
 
 
 def press(*args):

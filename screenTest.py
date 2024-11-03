@@ -10,7 +10,7 @@ import keyboard
 is_running = True
 
 # mac_address = "76:95:E3:BB:43:7B"
-CHARACTERISTIC_UUID = "aaaaaaaa-dddd-bbbb-bbbb-bbbbbbbbbbbb"
+CHARACTERISTIC_UUID = "C2CF9284-8903-4EA0-A873-FE3AB1A56FE8"
 UUID = "aaaaaaaa-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
 
 def notify_izunya(sender: int, data: bytearray):
@@ -25,9 +25,9 @@ async def maincentral(device):
     #print('found', device.name, device.address)
 
     async with BleakClient(device, timeout=None) as client:
-        x = await client.write_gatt_char(UUID,b"\0x01")
+        # x = await client.write_gatt_char(UUID,b"\0x01")
         label.config(text="繋がったよ")
-        print("Connected: {0}".format(x))
+        #print("Connected: {0}".format(x))
        # await client.start_notify(CHARACTERISTIC_UUID, notification_handler)
 
         await client.start_notify(CHARACTERISTIC_UUID,  notify_izunya)
@@ -50,7 +50,7 @@ async def scan(prefix='TEST BLE'):
             devices = await BleakScanner.discover()
             for d in devices:
                 print(f"address: {d.address}, name: {d.name}, uuid: {d.metadata['uuids']}")
-                if d.name == 'TEST BLE' or d.metadata['uuids'] == ['aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee']:
+                if d.name == 'TEST BLE': #or d.metadata['uuids'] == ['aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee']:
                     #return d
                     label.config(text="接続完了")
                     button.config(state=tk.NORMAL)

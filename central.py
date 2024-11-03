@@ -6,7 +6,7 @@ import time
 
 # mac_address = "76:95:E3:BB:43:7B"
 CHARACTERISTIC_UUID = "C2CF9284-8903-4EA0-A873-FE3AB1A56FE8"#NotifyCharacteristic
-UUID = "aaaaaaaa-bbbb-bbbb-bbbb-bbbbbbbbbbbb" #WriteWithoutResponseCharacteristic
+#UUID = "aaaaaaaa-bbbb-bbbb-bbbb-bbbbbbbbbbbb" #WriteWithoutResponseCharacteristic
 
 async def scan(prefix='TEST BLE'):
     while True:
@@ -33,8 +33,8 @@ async def main():
     #print('found', device.name, device.address)
 
     async with BleakClient(device, timeout=None) as client:
-        # x = await client.write_gatt_char(UUID,b"\0x01")
-        # print("Connected: {0}".format(x))
+        x = await client.write_gatt_char(UUID,b"\0x01")
+        print("Connected: {0}".format(x))
        # await client.start_notify(CHARACTERISTIC_UUID, notification_handler)
 
         await client.start_notify(CHARACTERISTIC_UUID,  notify_izunya)
