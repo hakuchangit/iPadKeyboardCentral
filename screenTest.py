@@ -6,6 +6,7 @@ import asyncio
 from bleak import BleakClient, discover
 from bleak import BleakScanner
 import time
+# 接続画面だけのテストではimport keyboardをコメントアウト
 import keyboard
 is_running = True
 
@@ -15,6 +16,8 @@ UUID = "aaaaaaaa-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
 
 def notify_izunya(sender: int, data: bytearray):
     keyboard.notification_handler(sender, data)
+    # 接続画面だけのテストでは上をコメントアウトし、print
+    # print("ノティファイド")
 
 
 async def maincentral(device):
