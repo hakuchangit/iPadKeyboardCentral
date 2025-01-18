@@ -7,17 +7,19 @@ from bleak import BleakClient, discover
 from bleak import BleakScanner
 import time
 # 接続画面だけのテストではimport keyboardをコメントアウト
-import keyboard
+# import keyboard
 is_running = True
+devices_list = []  # スキャンしたデバイスを保持
+
 
 # mac_address = "76:95:E3:BB:43:7B"
 CHARACTERISTIC_UUID = "C2CF9284-8903-4EA0-A873-FE3AB1A56FE8"
 UUID = "aaaaaaaa-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
 
 def notify_izunya(sender: int, data: bytearray):
-    keyboard.notification_handler(sender, data)
+    # keyboard.notification_handler(sender, data)
     # 接続画面だけのテストでは上をコメントアウトし、print
-    # print("ノティファイド")
+    print("ノティファイド")
 
 
 async def maincentral(device):
@@ -50,21 +52,33 @@ async def scan(prefix='TEST BLE'):
     while is_running:
         try:
             print('scan...')
+            global devices_list
+            devices_list.clear()
+            scanner_label.config(text="スキャン中...")
             devices = await BleakScanner.discover()
-            for d in devices:
-                print(f"address: {d.address}, name: {d.name}, uuid: {d.metadata['uuids']}")
-                if d.name == 'TEST BLE': #or d.metadata['uuids'] == ['aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee']:
+            for device in devices:
+                devices_list.append(device)
+                device_listbox.insert(tk.END, f"{device.name or 'Unknown'} - {device.address}")
+                print(f"address: {device.address}, name: {device.name}, uuid: {device.metadata['uuids']}")
+                if device.name == 'TEST BLE': #or d.metadata['uuids'] == ['aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee']:
                     #return d
                     label.config(text="接続完了")
                     button.config(state=tk.NORMAL)
-                    await maincentral(d)
+                    await maincentral(device)
                     continue
             continue
         except StopIteration:
             print('continue..')
             continue
 
-
+def connect_selected_device():
+    selected_index = device_listbox.curselection()
+    if selected_index:
+        device = devices_list[selected_index[0]]
+        threading.Thread(target=lambda: asyncio.run(connect_to_device(device.address))).start()
+        label.config(text=f"{device.name or 'Unknown'} に接続を試みています...")
+    else:
+        label.config(text="デバイスを選択してください")
 
 def update_label_after_scan():
     label.config(text="接続中...")
@@ -101,6 +115,14 @@ button.pack(pady=10)
 
 button_stop = tk.Button(root, text="stop", command=on_button_click_stop)
 button_stop.pack(pady=10)
+
+# リストボックス
+device_listbox = tk.Listbox(root, width=60, height=15)
+device_listbox.pack(pady=10)
+
+# スキャン状態ラベル
+scanner_label = tk.Label(root, text="デバイスをスキャンしてください")
+scanner_label.pack(pady=5)
 
 # ラベルを作成
 label = tk.Label(root, text="接続を開始するにはボタンをクリックしてください")
