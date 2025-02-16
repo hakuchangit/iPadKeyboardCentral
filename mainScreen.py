@@ -9,7 +9,7 @@ import time
 # 接続画面だけのテストではimport keyboardをコメントアウト
 # import keyboard
 is_running = True
-devices_list = []  # スキャンしたデバイスを保持
+devices_list = {}  # スキャンしたデバイスを保持
 
 
 # mac_address = "76:95:E3:BB:43:7B"
@@ -31,7 +31,7 @@ async def maincentral(device):
 
     async with BleakClient(device, timeout=None) as client:
         # x = await client.write_gatt_char(UUID,b"\0x01")
-        label.config(text="繋がったよ")
+        label.config(text=f"{device.name} に接続しました")
         #print("Connected: {0}".format(x))
        # await client.start_notify(CHARACTERISTIC_UUID, notification_handler)
 
@@ -57,15 +57,23 @@ async def scan(prefix='TEST BLE'):
             scanner_label.config(text="スキャン中...")
             devices = await BleakScanner.discover()
             for device in devices:
-                devices_list.append(device)
-                device_listbox.insert(tk.END, f"{device.name or 'Unknown'} - {device.address}")
-                print(f"address: {device.address}, name: {device.name}, uuid: {device.metadata['uuids']}")
-                if device.name == 'TEST BLE': #or d.metadata['uuids'] == ['aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee']:
-                    #return d
-                    label.config(text="接続完了")
-                    button.config(state=tk.NORMAL)
-                    await maincentral(device)
-                    continue
+                if device.name and device.name == "TEST BLE":
+                    # if device.address not in devices_list:  # 重複を防ぐ
+                    devices_list[device.address] = device
+                    device_listbox.insert(tk.END, f"{device.name} - {device.address}")
+                    print(device_listbox)
+            
+            scanner_label.config(text="スキャン完了！デバイスを選択してください")
+                    # for device in devices:
+            #     devices_list.append(device)
+            #     device_listbox.insert(tk.END, f"{device.name or 'Unknown'} - {device.address}")
+            #     print(f"address: {device.address}, name: {device.name}, uuid: {device.metadata['uuids']}")
+            #     if device.name == 'TEST BLE': #or d.metadata['uuids'] == ['aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee']:
+            #         #return d
+            #         label.config(text="接続完了")
+            #         button.config(state=tk.NORMAL)
+            #         await maincentral(device)
+            #         continue
             continue
         except StopIteration:
             print('continue..')
