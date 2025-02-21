@@ -157,6 +157,8 @@ VK_CODE = {'backspace':0x08,
            "'":0xDE,
            '`':0xC0,
            'convert':0x1c,
+           '?': 0xBF,
+           '!': 0x31,  # Shift + 1
            }
 
 
@@ -165,6 +167,8 @@ Two_char={
     'を':[0x10,0x30],
     '、':[0x10,0xbc],
     '。':[0x10,0xbe],
+    '!': [0x10, 0x31],  # Shift + 1
+    '?': [0x10, 0xBF],  # Shift + /
 
 
     }
@@ -185,7 +189,9 @@ Romaji={
 
 
 Changetoinput={
-       "あ":"3",
+    "？": "?",
+    "！": "!",
+    "あ":"3",
     "い":"e",
     "う":"4",
     "え":"5",
@@ -255,8 +261,6 @@ Changetoinput={
     "。\n句点":"。",
     "、\n読点":"、",
     "小文字":"F8",
-
-
     }
 
 
@@ -368,23 +372,24 @@ async def scan(prefix='TEST BLE'):
 
 def notification_handler(sender, data):
     print("BUTTON {0}: {1}".format(sender, data))
-    str = data.decode()
-    print(str)
+    char = data.decode()
+    print(char)
 
-    if str in Changetoinput.keys():
-        st = str
-        str = Changetoinput[st]
+    # 1. Two_char（Shiftキーとの組み合わせ）を優先する
+    if char in Two_char:
+        press3(char)
+        print("Shift + ", char)
+        return
 
-    if str in VK_CODE.keys():
-       press(str)
-    elif str in Two_char.keys():
-        press3(str)
-        print(str)
-    elif str in Romaji.keys():
-        print(str)
-        press4(str)
+    # 2. Changetoinput を適用
+    if char in Changetoinput:
+        char = Changetoinput[char]
 
+    # 3. 通常のキー入力
+    if char in VK_CODE:
+        press(char)
+    elif char in Romaji:
+        press4(char)
     else:
-       print("aaaaa" + data.decode())
-       for i in str:
-           press(i)
+        for c in char:
+            press(c)

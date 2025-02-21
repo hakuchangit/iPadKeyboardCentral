@@ -7,7 +7,7 @@ from bleak import BleakClient, discover
 from bleak import BleakScanner
 import time
 # 接続画面だけのテストではimport keyboardをコメントアウト
-# import keyboard
+import keyboard
 is_running = True
 devices_list = []  # スキャンしたデバイスを保持
 loop = None  # asyncioイベントループ
@@ -87,7 +87,7 @@ async def scan(prefix='TEST BLE'):
             scanner_label.config(text="スキャン中...")
             devices = await BleakScanner.discover()
             for device in devices:
-                if device.name and device.name == "50on" or devie.name == "iPad":
+                if device.name and (device.name == "50on" or device.name == "iPad"):
                     if device.address not in devices_list:  # 重複を防ぐ
                         devices_list.append(device)
                         device_listbox.insert(tk.END, f"{device.name} - {device.address}")
