@@ -87,10 +87,10 @@ async def scan(prefix='TEST BLE'):
             scanner_label.config(text="スキャン中...")
             devices = await BleakScanner.discover()
             for device in devices:
-                # if device.name and device.name == "TEST BLE":
-                if device.address not in devices_list:  # 重複を防ぐ
-                    devices_list.append(device)
-                    device_listbox.insert(tk.END, f"{device.name} - {device.address}")
+                if device.name and device.name == "50on" or devie.name == "iPad":
+                    if device.address not in devices_list:  # 重複を防ぐ
+                        devices_list.append(device)
+                        device_listbox.insert(tk.END, f"{device.name} - {device.address}")
             continue
         except StopIteration:
             print('continue..')
