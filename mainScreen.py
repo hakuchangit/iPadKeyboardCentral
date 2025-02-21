@@ -18,9 +18,9 @@ CHARACTERISTIC_UUID = "C2CF9284-8903-4EA0-A873-FE3AB1A56FE8"
 UUID = "aaaaaaaa-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
 
 def notify_izunya(sender: int, data: bytearray):
-    # keyboard.notification_handler(sender, data)
+    keyboard.notification_handler(sender, data)
     # 接続画面だけのテストでは上をコメントアウトし、print
-    print("ノティファイド")
+    # print("ノティファイド")
 
 
 async def maincentral(device):
